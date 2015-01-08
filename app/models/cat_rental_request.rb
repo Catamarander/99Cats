@@ -9,6 +9,12 @@ class CatRentalRequest < ActiveRecord::Base
   validate :validate_no_cat_date_overlap
 
   belongs_to :cat
+  belongs_to(
+    :requester,
+    class_name: "User",
+    foreign_key: :requester_id
+  )
+  has_one :owner, through: :cat, source: :user
 
   def approve!
     ActiveRecord::Base.transaction do

@@ -1,4 +1,12 @@
 class CatRentalRequestsController < ApplicationController
+  before_action :check_rental_owner, only:[:approve_or_deny]
+
+  def check_rental_owner
+    @rental = CatRentalRequest.find(params[:id])
+    if @rental.owner != current_user
+      redirect_to cats_url
+    end
+  end
 
   def index
     @rentals = CatRentalRequest.all
@@ -15,6 +23,7 @@ class CatRentalRequestsController < ApplicationController
 
   def create
     @rental = CatRentalRequest.new(rental_params)
+    @rental.requester_id = current_user.id
     @rental.save
 
     redirect_to cat_rental_request_url(@rental)
@@ -27,7 +36,6 @@ class CatRentalRequestsController < ApplicationController
   end
 
   def approve_or_deny
-    @rental = CatRentalRequest.find(params[:id])
     new_status = params[:new_status]
     if new_status == "Approve"
       @rental.approve!

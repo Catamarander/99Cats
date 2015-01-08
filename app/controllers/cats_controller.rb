@@ -1,4 +1,12 @@
 class CatsController < ApplicationController
+  before_action :check_cat_owner, only: [:edit, :update]
+
+  def check_cat_owner
+    @cat = Cat.find(params[:id])
+    if @cat.user != current_user
+      redirect_to cats_url
+    end
+  end
 
   def index
     @cats = Cat.all
@@ -13,7 +21,7 @@ class CatsController < ApplicationController
 
   def create
     @cat = Cat.new(cat_params)
-
+    @cat.user_id = current_user.id
     @cat.save
 
     redirect_to cat_url(@cat)
@@ -26,13 +34,10 @@ class CatsController < ApplicationController
   end
 
   def edit
-    @cat = Cat.find(params[:id])
-
     render :edit
   end
 
   def update
-    @cat = Cat.find(params[:id])
     @cat.update(cat_params)
 
     redirect_to cat_url(@cat)
