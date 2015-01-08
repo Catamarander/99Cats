@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   resource :session
   resources :login, only: [:index]
 
-  delete 'login/whatever' => 'login#destroy'
+  delete 'login' => 'login#destroy'
 
   post 'rental/:id/' => 'cat_rental_requests#approve_or_deny'
 end

@@ -1,17 +1,16 @@
 class LoginController < ApplicationController
   def index
-    @user = current_user
-    @logins = Login.find_all_logins_for_user(@user)
+    @logins = Login.find_all_logins_for_user(current_user)
 
     render :index
   end
 
   def destroy
-    time = params[:login][:creation_time]
+    @logins = Login.find_all_logins_for_user(current_user)
+    id = params[:login][:unique_id]
+    user_id = current_user.id
 
-    @user = current_user
-    userid = @user.id
-    Login.where(user_id: userid, updated_at: time).destroy_all
+    Login.where(user_id: user_id, id: id).destroy_all
 
     render :index
   end
