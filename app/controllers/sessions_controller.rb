@@ -19,8 +19,9 @@ class SessionsController < ApplicationController
 
   def destroy
     @user = current_user
+    userid = @user.id
+    Login.where(user_id: userid, token: session[:session_token]).destroy_all
     session[:session_token] = nil
-    @user.reset_session_token!
     render :new
   end
 end
